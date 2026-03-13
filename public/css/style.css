@@ -1,0 +1,142 @@
+body{
+   font-family: "Plus Jakarta Sans", sans-serif !important;
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+}
+
+.container{
+    flex: 1;
+}
+
+/* Navbar */
+.navbar {
+    min-height: 5rem;
+    background-color: white;
+    /* backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.7); */
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link{
+    color: #222222 !important;
+}
+
+/* Footer */
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.f-info-links , .f-info-socials , .f-info-brand{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-socials i{
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.f-info{
+    text-align: center;
+    height: 8rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* align-items: space-evenly; */
+}
+
+/* Cards */
+.listing-card{
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+
+.card-img-top{
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body{
+    padding: 0 !important;
+}
+
+.card-text{
+    font-weight: 400;
+}
+
+.listing-link{
+    text-decoration: none;
+}
+
+/* Card Effect */
+.card-img-overlay{
+    opacity: 0;
+}
+
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* New Listing Form */
+.add-btn, .edit-btn{
+    background-color: #fe424d !important;
+    border: none !important;
+}
+
+/* show page */
+.show-img{
+    height: 45vh;
+    object-fit: cover !important;
+    display: block;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .show-img{
+        height: 420px;
+    }
+}
+
+/* Laptop / Desktop */
+@media (min-width: 1024px) {
+    .show-img{
+        height: 470px;
+    }
+}
+@media (min-width: 1440px) {
+    .show-img{
+        height: 580px;
+    }
+}
+
+.btns{
+    display: flex;
+    
+}
+
+.show-card{
+    padding-left: 0 !important;
+        padding-right: 0 !important;
+}
+
+.card-header{
+    padding: 0.5rem 0 !important;
+    padding-left: 0.5rem !important;
+    
+}

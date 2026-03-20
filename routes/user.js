@@ -1,36 +1,31 @@
 const express = require("express");
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+const { saveRedirectUrl } = require("../middleware.js");
+const {
+  signup,
+  renderSignupForm,
+  renderLoginForm,
+  login,
+  logout,
+} = require("../controller/users.js");
 
-router.get("/signup", (req, res) => {
-    res.render("users/signup.ejs");
-})
+router.route("/signup").get(renderSignupForm).post(wrapAsync(signup));
 
-router.post("/signup", wrapAsync(async(req, res) => {
-    try{
-       let {username, email, password} = req.body;
-    const newUser = new User({email, username});
-    const registeredUser = await User.register(newUser, password);
-    console.log(registeredUser);
-    req.flash("success", "Welcome To StayHub!");
-    res.redirect("/listings");
-    } catch(err){
-        req.flash("error", err.message);
-        res.redirect("/signup");
-    }
-    
-}));
+router
+  .route("/login")
+  .get(renderLoginForm)
+  .post(
+    saveRedirectUrl,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    login,
+  );
 
-router.get("/login", (req, res) => {
-    res.render("users/login.ejs");
-});
-
-router.post("/login", passport.authenticate("local", {failureRedirect: "/login", failureFlash: true}), (req, res) => {
-    req.flash("success", "Welcome back to StayHub!");
-    res.redirect("/listings");
-});
-
+router.get("/logout", logout);
 
 module.exports = router;

@@ -1,28 +1,357 @@
 <% layout("/layouts/boilerplate") %>
 <body>
-    <h3>all listing</h3>
-    <!-- <form action="/listings/new" method="GET">
-        <button>Create new listing</button>
-    </form> -->
-    <!-- removed button because we have create new listing button in navbar -->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <style>
+        /* Small screens */
+@media (min-width: 576px) {
+  .listings-row .listing-card {
+    width: 50%;
+  }
+}
+
+        #filters{
+            display: flex;
+            flex-wrap: flex;
+            justify-content: space-between;
+            align-items: center;
+             overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none; /* Firefox */
+}
+        
+
+        .filter{
+            text-align: center;
+            margin-right: 2rem;
+            margin-top: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .filter:hover{
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .filter p{
+            font-size: 0.8rem;
+        }
+
+        #filters::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+
+        .tax-toggle{
+            position: sticky;
+            right: 0;
+            display: flex;
+            align-items: center;
+            border: 1px solid black;
+            border-radius: 1rem;
+            height: 3.2rem;
+            padding: 1rem;
+             z-index: 10;
+        }
+        
+        .tax-info{
+            display: none;
+            font-size: 7px;
+        }
+         
+        .card-img-top {
+  width: 100%;
+  object-fit: cover;
+}
+
+
+
+/* 📱 Small screens (<576px) */
+@media (max-width: 575px) {
+  .card-img-top {
+    height: 80px;   /* smaller image */
+  }
+
+  .card-body {
+    padding: 6px;
+  }
+
+  .card-text {
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .card-img-top {
+    height: 110px;
+  }
+
+  .card-text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 350px) {
+  .navbar-toggler {
+    display: none !important;
+  }
+  .navbar-brand {
+    display: none !important;
+  }
+}
+
+/* 💻 Medium+ */
+@media (min-width: 768px) {
+  .card-img-top {
+    height: 150px;
+  }
+}
+@media (max-width: 575px) {
+  .tax-toggle {
+    position: fixed;
+    bottom: 60px;
+    right: 40px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+}
+
+.tax-float {
+  position: fixed;
+  bottom: 70px;
+  right: 15px;
+  z-index: 1000;
+  transition: all 0.3s ease; /* 🔥 smooth */
+}
+
+/* Button stays same */
+.tax-icon {
+  background: #fe424d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
+}
+
+/* 🔥 Drawer style panel */
+.tax-panel {
+  position: absolute;
+  bottom: 0;
+  right: 60px; /* space from button */
+
+  background: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
+  /* hidden state */
+  opacity: 0;
+  transform: translateX(20px);  /* 👉 push right */
+  pointer-events: none;
+
+  transition: all 0.3s ease;
+}
+
+/* 🔥 visible state (slides LEFT) */
+.tax-panel.show {
+  opacity: 1;
+  transform: translateX(0);  /* 👉 comes LEFT */
+  pointer-events: auto;
+}
+
+.tax-panel .form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;   /* 🔥 prevents line break */
+}
+
+
+
+    </style>
+
+    <div id="filters">
+        <div class="filter">
+            <div><i class="fa-solid fa-fire"></i></div>
+            <p>Trending</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-bed"></i></div>
+            <p>Rooms</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-igloo"></i></div>
+            <p>Arctic</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-mountain-city"></i></div>
+            <p>Iconic Cities</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-mountain-sun"></i></i></div>
+            <p>Mountains</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-brands fa-fort-awesome"></i></div>
+            <p>Castles</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-person-swimming"></i></div>
+            <p>Amazing Pools</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-tent"></i></div>
+            <p>Camps</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>Beach</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-sailboat"></i></div>
+            <p>Boat</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-cow"></i></div>
+            <p>farms</p>
+        </div>
+        <div class="filter">
+            <div><i class="fa-solid fa-cow"></i></div>
+            <p>farms</p>
+        </div>
+    </div>
+
+    <div class="tax-float d-md-none">
+
+  <!-- ICON BUTTON -->
+  <button id="taxBtn" class="tax-icon">
+    💰
+  </button>
+
+  <!-- EXPANDABLE PANEL -->
+  <div id="taxPanel" class="tax-panel">
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="taxToggle">
+      <label class="form-check-label" for="taxToggle">
+        Show price with tax
+      </label>
+    </div>
+  </div>
+
+</div>
+
+    <div class="row row-cols-3 row-cols-lg-6 row-cols-md-4 row-cols-sm-3 mt-3">
         <% for(let listing of allListing){ %>
             <a href="/listings/<%= listing._id %>" class="listing-link">
                 <div class="card col listing-card">
-                    <img src="<%= listing.image %>" class="card-img-top" alt="listing-image" style="height: 20rem;">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-image" ">
                     <div class="card-img-overlay"></div>
                     <div class="card-body">
-                        <p class="card-text"><b>
-                                <%= listing.title %>
-                            </b> <br>
-                            &#8377 <%= listing.price?.toLocaleString("en-IN") || "0" %> / night
-
-                        </p>
+                        <p class="card-text">
+  <b><%= listing.title %></b> <br>
+  <span class="price-wrapper">
+    <span class="price" data-base="<%= listing.price %>">
+      ₹ <%= listing.price?.toLocaleString("en-IN") || "0" %> / night
+    </span><br>
+    <i class="tax-info">(18% GST)</i>
+  </span>
+</p>
                     </div>
                 </div>
             </a>
        
     <% } %>
     </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("taxBtn");
+  const panel = document.getElementById("taxPanel");
+  const toggle = document.getElementById("taxToggle");
+
+  const prices = document.querySelectorAll(".price");
+  const taxInfos = document.querySelectorAll(".tax-info");
+
+  // OPEN / CLOSE PANEL
+  if (btn && panel) {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      panel.classList.toggle("show");
+    });
+  }
+
+  // Prevent close when clicking inside panel
+  if (panel) {
+    panel.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  // Click outside → close
+  document.addEventListener("click", () => {
+    panel.classList.remove("show");
+  });
+
+  // TAX TOGGLE FUNCTIONALITY
+  if (toggle) {
+    toggle.addEventListener("change", () => {
+
+      prices.forEach(priceEl => {
+        let base = Number(priceEl.dataset.base);
+
+        if (toggle.checked) {
+          priceEl.innerText =
+            "₹ " + Math.round(base * 1.18).toLocaleString("en-IN") + " / night";
+        } else {
+          priceEl.innerText =
+            "₹ " + base.toLocaleString("en-IN") + " / night";
+        }
+      });
+
+      taxInfos.forEach(info => {
+        info.style.display = toggle.checked ? "inline" : "none";
+      });
+
+    });
+  }
+
+  // Scroll hide/show
+  const taxFloat = document.querySelector(".tax-float");
+  const mobileAuth = document.querySelector(".mobile-auth");
+  let lastScrollY = window.scrollY;
+
+  if (taxFloat || mobileAuth) {
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+
+      // scrolling down → hide
+      if (currentScrollY > lastScrollY) {
+        if (taxFloat) {
+          taxFloat.style.transform = "translateY(100px)";
+          taxFloat.style.opacity = "0";
+        }
+        if (mobileAuth) {
+          mobileAuth.style.transform = "translateY(100%)";
+        }
+      } 
+      // scrolling up → show
+      else {
+        if (taxFloat) {
+          taxFloat.style.transform = "translateY(0)";
+          taxFloat.style.opacity = "1";
+        }
+        if (mobileAuth) {
+          mobileAuth.style.transform = "translateY(0)";
+        }
+      }
+
+      lastScrollY = currentScrollY;
+    });
+  }
+
+});
+</script>
 
 </body>

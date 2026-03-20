@@ -1,15 +1,193 @@
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/"><i class="fa-regular fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/listings">All Listings</a>
-        <a class="nav-link" href="/listings/new">Add new Listing</a>
-      </div>
+<style>
+.search-btn {
+  background-color: #fe424d;
+  color: white;
+  border-radius: 50% !important;
+  white-space: nowrap;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+  .search-btn:hover {
+    background-color: #e0333d;
+    color: white;
+  }
+  .search-inp {
+    border-radius: 30px;
+  padding: 0.5rem 1.2rem;
+  }
+  @media (max-width: 576px) {
+    .search-inp {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+    }
+  }
+
+  /* 3-column grid on md+ */
+  @media (min-width: 768px) {
+    .navbar-grid {
+      display: grid !important;
+       grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      width: 100%;
+    }
+    .navbar-left  { display: flex; align-items: center; gap: 0.5rem; }
+    .navbar-center { display: flex; justify-content: center; }
+    .navbar-right  { display: flex; align-items: center; justify-content: flex-end; gap: 2rem; flex-nowrap; }
+    .search-form { width: 380px; }
+  }
+
+  /* Simple flex on mobile */
+  @media (max-width: 767px) {
+    .navbar-grid { display: flex !important; align-items: center; width: 100%; gap: 8px; }
+    .navbar-left  { display: flex; align-items: center; }
+    .navbar-center { flex-grow: 1; }
+    .navbar-right  { display: flex; align-items: center; }
+    .search-form { width: 100%; }
+  }
+
+  /* Search width between 768–1024 */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .search-form { width: 260px; }
+  }
+
+  /* Host link: hidden below 1024px */
+  .host-link { display: none !important; }
+  @media (min-width: 1024px) {
+    .host-link { display: block !important; }
+  }
+
+  /* Mobile bottom bar */
+  .mobile-auth {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 -1px 0 #dee2e6;
+    display: flex;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+  .mobile-auth a {
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .mobile-auth .w-33 {
+  width: 33.33% !important;
+}
+</style>
+
+<nav class="navbar bg-body-light border-bottom sticky-top">
+  <div class="container-fluid navbar-grid">
+
+    <!-- LEFT: Logo + Explore -->
+    <div class="navbar-left">
+      <a class="navbar-brand" href="/listings">
+        <i class="fa-regular fa-compass"></i>
+      </a>
+      <a class="nav-link d-none d-md-block" href="/listings">Explore</a>
+    </div>
+
+    <!-- CENTER: Search -->
+    <div class="navbar-center">
+      <form class="d-flex search-form" role="search" action="/listings/search" method="GET">
+        <input name="q" class="form-control me-2 search-inp" type="search" placeholder="Search destinations" />
+        <button class="btn search-btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="navbar-right flex-nowrap" style="gap: 0.75rem;">
+
+      <!-- Become a host: only on 1024px+ -->
+      <a class="nav-link host-link" href="/listings/new">Become a host</a>
+
+      <!-- Auth: unchanged, md+ inline -->
+      <% if(!currUser) { %>
+        <a class="nav-link d-none d-md-block" href="/signup"><b>Sign up</b></a>
+        <a class="nav-link d-none d-md-block" href="/login"><b>Login</b></a>
+      <% } %>
+      <% if(currUser) { %>
+        <a class="nav-link d-none d-md-block" href="/logout"><b>Logout</b></a>
+      <% } %>
+
+      <!-- Toggler: always visible -->
+    <button class="navbar-toggler d-md-none" type="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#navbarCollapse"
+  aria-controls="navbarCollapse"
+  aria-expanded="false"
+  aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+    </div>
+
+  </div>
+
+  <!-- Toggle menu -->
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav text-center px-3 pb-2">
+
+      <!-- Auth: in toggle on mobile only, unchanged -->
+      <% if(!currUser) { %>
+        <a class="nav-link d-md-none" href="/signup"><b>Sign up</b></a>
+        <a class="nav-link d-md-none" href="/login"><b>Login</b></a>
+      <% } %>
+      <% if(currUser) { %>
+        <a class="nav-link d-md-none" href="/logout"><b>Logout</b></a>
+      <% } %>
+
     </div>
   </div>
 </nav>
+
+<!-- Mobile bottom bar -->
+<div class="mobile-auth d-md-none">
+  <% if(!currUser) { %>
+    <a href="/signup" class="btn w-33 d-flex flex-column align-items-center py-2">
+      <i class="fa-solid fa-user-plus mb-1" style="font-size: 1.1rem;"></i>
+      <span style="font-size: 0.7rem;">Sign up</span>
+    </a>
+    <a href="/listings/new" class="btn w-33 d-flex flex-column align-items-center py-2">
+      <i class="fa-solid fa-door-open mb-1" style="font-size: 1.1rem;"></i>
+      <span style="font-size: 0.7rem;">Host</span>
+    </a>
+    <a href="/login" class="btn w-33 d-flex flex-column align-items-center py-2">
+      <i class="fa-solid fa-arrow-right-to-bracket mb-1" style="font-size: 1.1rem;"></i>
+      <span style="font-size: 0.7rem;">Login</span>
+    </a>
+  <% } %>
+  <% if(currUser) { %>
+  <a href="/listings/new" class="btn w-50 d-flex flex-column align-items-center py-2">
+    <i class="fa-solid fa-door-open mb-1" style="font-size: 1.1rem;"></i>
+    <span style="font-size: 0.7rem;">Host</span>
+  </a>
+  <a href="/logout" class="btn w-50 d-flex flex-column align-items-center py-2">
+    <i class="fa-solid fa-arrow-right-from-bracket mb-1" style="font-size: 1.1rem;"></i>
+    <span style="font-size: 0.7rem;">Logout</span>
+  </a>
+<% } %>
+</div>
+
+<script>
+  let lastScrollY = window.scrollY;
+  const mobileAuth = document.querySelector(".mobile-auth");
+
+  if (mobileAuth) {
+    window.addEventListener("scroll", () => {
+      mobileAuth.style.transform =
+        window.scrollY > lastScrollY ? "translateY(100%)" : "translateY(0)";
+      lastScrollY = window.scrollY;
+    });
+  }
+</script>

@@ -1,3 +1,6 @@
+if(process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+}
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -9,12 +12,14 @@ const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js")
 const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const flash = require("connect-flash");
-require("dotenv").config();
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const { error } = require("console");
 
+const dbURL = process.env.ATLASDB_URL;
 
 main()
   .then((res) => {
@@ -25,7 +30,7 @@ main()
   });
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/stayhub");
+  await mongoose.connect(dbURL);
 }
 
 app.set("view engine", "ejs");
@@ -36,7 +41,20 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+const store = MongoStore.create({
+  mongoUrl: dbURL,
+  crypto: {
+    secret: process.env.SESSION_SECRET
+  },
+  touchAfter: 24 * 3600
+})
+
+store.on("error", () => {
+  console.log("Error in Mongo Session", error)
+})
+
 const sessionOPtions = {
+  store,
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
@@ -59,6 +77,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
   next();
 })
 
@@ -71,11 +90,9 @@ app.use("/demouser", async(req, res) =>{
   res.send(registeredUser);
 });
 
-app.get("/", (req, res) => {
-  res.send("Hi, I am root");
-});
-
-
+// app.get("/", (req, res) => {
+//   res.send("Hi, I am root");
+// });
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);

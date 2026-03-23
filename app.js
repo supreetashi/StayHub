@@ -90,9 +90,10 @@ app.use("/demouser", async(req, res) =>{
   res.send(registeredUser);
 });
 
-// app.get("/", (req, res) => {
-//   res.send("Hi, I am root");
-// });
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
